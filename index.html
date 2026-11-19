@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MVLS HOZIN STUDIO | 수강신청</title>
+  <meta name="description" content="MVLS HOZIN STUDIO 방배동 댄스 스튜디오 - 시간표 확인과 온라인 수강신청 (4주권 · 1회권)" />
+  <meta property="og:title" content="MVLS HOZIN STUDIO | 수강신청" />
+  <meta property="og:description" content="시간표 확인하고 바로 신청하세요. 4주권 · 1회권" />
+  <meta name="theme-color" content="#0d0d0e" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <a class="skip" href="#classes">수업 선택으로 건너뛰기</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="#top" aria-label="MVLS HOZIN STUDIO 홈">
+        <span class="brand__mark">MVLS</span>
+        <span class="brand__name">HOZIN STUDIO</span>
+      </a>
+      <div class="topbar__actions">
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" data-lang="ko" aria-pressed="true">KR</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="btn btn--sm btn--accent" href="#classes" data-i18n="nav.apply">수강신청</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow"><span class="dot"></span><span id="heroMonth">NOVEMBER 2026</span> · CLASS SCHEDULE</p>
+        <h1 class="hero__title">
+          <span>MVLS</span>
+          <span class="hero__accent">HOZIN</span>
+          <span>STUDIO</span>
+        </h1>
+        <p class="hero__lead" data-i18n="hero.lead">원하는 수업을 고르고 바로 신청하세요.<br />강사·장르·시간을 한눈에 보고, 4주권 또는 1회권으로 등록할 수 있습니다.</p>
+        <ul class="hero__facts">
+          <li><b>MON — FRI</b><span>18:20 – 22:30</span></li>
+          <li><b data-i18n="hero.place">방배동</b><span id="heroAddr">서울시 서초구 방배동 437-23</span></li>
+          <li><b data-i18n="hero.ticket">수강권</b><span data-i18n="hero.ticketDesc">4주권 · 1회권</span></li>
+        </ul>
+        <div class="hero__cta">
+          <a class="btn btn--accent" href="#classes" data-i18n="hero.cta">수업 고르기</a>
+          <a class="btn btn--ghost" id="kakaoHero" href="#" target="_blank" rel="noopener" data-i18n="hero.kakao">카카오 상담</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTICE -->
+    <section class="notice" id="noticeSection" hidden>
+      <div class="wrap">
+        <h2 class="notice__title" data-i18n="notice.title">휴강 · 대강 안내</h2>
+        <ul class="notice__list" id="noticeList"></ul>
+      </div>
+    </section>
+
+    <!-- TIMETABLE -->
+    <section class="section" id="timetable">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow eyebrow--muted" id="ttMonth">2026.11 · TIMETABLE</p>
+            <h2 class="section__title" data-i18n="tt.title">전체 시간표</h2>
+          </div>
+          <p class="section__hint" data-i18n="tt.hint">수업을 누르면 바로 신청할 수 있어요</p>
+        </div>
+        <div class="legend" id="genreLegend"></div>
+        <div class="tt-scroll" tabindex="0" aria-label="주간 시간표">
+          <div class="tt" id="timetableGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLASS LIST -->
+    <section class="section section--alt" id="classes">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow eyebrow--muted">WEEKLY CLASSES</p>
+            <h2 class="section__title" data-i18n="cls.title">수업 선택</h2>
+          </div>
+          <p class="section__hint" data-i18n="cls.hint">요일을 고르고 수업을 선택하세요</p>
+        </div>
+        <div class="daytabs" role="tablist" id="dayTabs"></div>
+        <div class="classlist" id="classList" role="tabpanel"></div>
+      </div>
+    </section>
+
+    <!-- HOW TO -->
+    <section class="section" id="howto">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow eyebrow--muted">HOW TO APPLY</p>
+            <h2 class="section__title" data-i18n="how.title">신청 방법</h2>
+          </div>
+        </div>
+        <ol class="steps">
+          <li><span class="steps__no">01</span><b data-i18n="how.s1">수업 · 수강권 선택</b><p data-i18n="how.s1d">4주권 또는 1회권, 수강 시작일을 고릅니다.</p></li>
+          <li><span class="steps__no">02</span><b data-i18n="how.s2">신청자 정보 입력</b><p data-i18n="how.s2d">이름과 연락처만 있으면 됩니다. 회원가입은 필요 없어요.</p></li>
+          <li><span class="steps__no">03</span><b data-i18n="how.s3">계좌 입금</b><p data-i18n="how.s3d">신청 완료 화면의 계좌로 신청자명과 같은 이름으로 입금합니다.</p></li>
+          <li><span class="steps__no">04</span><b data-i18n="how.s4">확정 안내</b><p data-i18n="how.s4d">입금이 확인되면 스튜디오에서 수강 안내 메시지를 드립니다.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- WORKSHOP -->
+    <section class="section section--alt" id="workshop" hidden>
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow eyebrow--muted">WORKSHOP</p>
+            <h2 class="section__title" data-i18n="ws.title">워크숍</h2>
+          </div>
+          <p class="section__hint" data-i18n="ws.hint">워크숍은 별도 신청서로 접수합니다</p>
+        </div>
+        <div class="ws" id="workshopList"></div>
+      </div>
+    </section>
+
+    <!-- LOCATION -->
+    <section class="section" id="location">
+      <div class="wrap loc">
+        <div>
+          <p class="eyebrow eyebrow--muted">LOCATION & CONTACT</p>
+          <h2 class="section__title">MVLS HOZIN STUDIO</h2>
+          <p class="loc__addr" id="locAddr"></p>
+          <p class="loc__sub" id="locHours"></p>
+        </div>
+        <div class="loc__btns">
+          <a class="btn btn--ghost" id="mapLink" href="#" target="_blank" rel="noopener" data-i18n="loc.map">지도 보기</a>
+          <a class="btn btn--ghost" id="kakaoLink" href="#" target="_blank" rel="noopener" data-i18n="loc.kakao">카카오 채널 문의</a>
+          <a class="btn btn--ghost" id="instaLink" href="#" target="_blank" rel="noopener" hidden>Instagram</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__links">
+        <button type="button" class="linkbtn" data-open-terms="refund" data-i18n="ft.refund">수강 안내 및 환불 규정</button>
+        <button type="button" class="linkbtn" data-open-terms="privacy" data-i18n="ft.privacy"><b>개인정보 처리방침</b></button>
+        <a class="linkbtn" id="adminLink" href="#" target="_blank" rel="noopener" data-i18n="ft.admin">관리자</a>
+        <button type="button" class="linkbtn" id="demoAdminBtn" hidden>데모 접수내역</button>
+      </div>
+      <div class="footer__biz" id="bizInfo"></div>
+      <p class="footer__note" data-i18n="ft.note">수업 일정은 스튜디오 사정에 따라 변경될 수 있습니다.</p>
+    </div>
+  </footer>
+
+  <!-- 신청 모달 -->
+  <div class="modal" id="applyModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="applyTitle">
+      <div class="modal__head">
+        <h2 id="applyTitle" data-i18n="f.title">수강 신청</h2>
+        <button type="button" class="iconbtn" data-close aria-label="닫기">✕</button>
+      </div>
+      <div class="modal__body">
+        <!-- STEP 1: 신청서 -->
+        <form id="applyForm" novalidate>
+          <div class="picked" id="pickedClass"></div>
+
+          <fieldset class="field">
+            <legend data-i18n="f.ticket">수강권</legend>
+            <div class="choices" id="ticketChoices"></div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend id="dateLegend" data-i18n="f.date">수강 시작일</legend>
+            <div class="dates" id="dateChoices"></div>
+            <p class="field__help" id="scheduleHelp"></p>
+          </fieldset>
+
+          <div class="field">
+            <label for="fName" data-i18n="f.name">이름</label>
+            <input id="fName" name="name" autocomplete="name" maxlength="30" required />
+            <p class="field__err" data-err="name"></p>
+          </div>
+
+          <div class="field">
+            <label for="fPhone" data-i18n="f.phone">연락처</label>
+            <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="010-0000-0000" required />
+            <p class="field__err" data-err="phone"></p>
+          </div>
+
+          <div class="field field--row">
+            <div>
+              <label for="fAge" data-i18n="f.age">연령대 <small>(선택)</small></label>
+              <select id="fAge" name="ageGroup">
+                <option value="" data-i18n="f.ageNone">선택 안 함</option>
+                <option value="10대">10대 / Teens</option>
+                <option value="20대">20대 / 20s</option>
+                <option value="30대">30대 / 30s</option>
+                <option value="40대">40대 / 40s</option>
+                <option value="50대 이상">50대 이상 / 50+</option>
+              </select>
+            </div>
+            <div>
+              <label for="fChannel" data-i18n="f.kind">신청 구분</label>
+              <select id="fChannel" name="channel">
+                <option value="사전 신청" data-i18n="f.kindPre">사전 신청</option>
+                <option value="현장 신청" data-i18n="f.kindOnsite">현장 신청 (스튜디오에서 신청)</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="fMinor" name="isMinor" />
+            <span data-i18n="f.minor">신청자가 만 14세 미만입니다 (보호자 정보 입력)</span>
+          </label>
+          <div class="guardian" id="guardianBox" hidden>
+            <div class="field">
+              <label for="fGName" data-i18n="f.gname">보호자 이름</label>
+              <input id="fGName" name="guardianName" maxlength="30" />
+              <p class="field__err" data-err="guardianName"></p>
+            </div>
+            <div class="field">
+              <label for="fGPhone" data-i18n="f.gphone">보호자 연락처</label>
+              <input id="fGPhone" name="guardianPhone" type="tel" inputmode="tel" maxlength="20" placeholder="010-0000-0000" />
+              <p class="field__err" data-err="guardianPhone"></p>
+            </div>
+          </div>
+
+          <details class="more">
+            <summary data-i18n="f.more">추가 정보 (선택)</summary>
+            <div class="field">
+              <label for="fReceipt" data-i18n="f.receipt">현금영수증 발급 번호</label>
+              <input id="fReceipt" name="cashReceipt" inputmode="numeric" maxlength="20" data-i18n-ph="f.receiptPh" placeholder="휴대폰 번호 또는 사업자번호 (희망 시)" />
+            </div>
+            <div class="field">
+              <label for="fSource" data-i18n="f.source">신청 경로</label>
+              <select id="fSource" name="source">
+                <option value="" data-i18n="f.ageNone">선택 안 함</option>
+                <option value="친구/지인 추천">친구/지인 추천 · Friends</option>
+                <option value="학원 인스타그램">학원 인스타그램 · Studio Instagram</option>
+                <option value="강사 인스타그램">강사 인스타그램 · Instructor Instagram</option>
+                <option value="카카오채널">카카오채널 · Kakao</option>
+                <option value="기타">기타 · Other</option>
+              </select>
+            </div>
+            <fieldset class="field">
+              <legend data-i18n="f.interest">관심 분야</legend>
+              <div class="tags" id="interestTags"></div>
+            </fieldset>
+            <div class="field">
+              <label for="fMemo" data-i18n="f.memo">문의 사항</label>
+              <textarea id="fMemo" name="memo" rows="3" maxlength="500"></textarea>
+            </div>
+          </details>
+
+          <div class="consents">
+            <label class="check check--all">
+              <input type="checkbox" id="fAgreeAll" />
+              <span data-i18n="f.agreeAll">아래 내용에 모두 동의합니다</span>
+            </label>
+            <div class="consent">
+              <label class="check">
+                <input type="checkbox" name="agreeRefund" data-agree />
+                <span data-i18n="f.agreeRefund">[필수] 수강 안내 및 환불 규정</span>
+              </label>
+              <button type="button" class="linkbtn" data-open-terms="refund" data-i18n="f.view">보기</button>
+            </div>
+            <div class="consent">
+              <label class="check">
+                <input type="checkbox" name="agreePrivacy" data-agree />
+                <span data-i18n="f.agreePrivacy">[필수] 개인정보 수집 · 이용 동의</span>
+              </label>
+              <button type="button" class="linkbtn" data-open-terms="privacy" data-i18n="f.view">보기</button>
+            </div>
+            <div class="consent" id="guardianConsent" hidden>
+              <label class="check">
+                <input type="checkbox" name="agreeGuardian" />
+                <span data-i18n="f.agreeGuardian">[필수] 법정대리인(보호자)으로서 위 내용에 동의합니다</span>
+              </label>
+            </div>
+            <p class="field__err" data-err="agree"></p>
+          </div>
+
+          <!-- 스팸 방지용 (사람에게는 보이지 않음) -->
+          <div class="hp" aria-hidden="true">
+            <label>Website <input name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <div class="summary" id="priceSummary"></div>
+          <p class="form__err" id="formError" role="alert" hidden></p>
+          <button class="btn btn--accent btn--block" type="submit" id="submitBtn" data-i18n="f.submit">신청하기</button>
+        </form>
+
+        <!-- STEP 2: 완료 -->
+        <div class="done" id="doneView" hidden>
+          <div class="done__badge">✓</div>
+          <h3 data-i18n="d.title">신청서가 접수되었어요</h3>
+          <p class="done__id"><span data-i18n="d.id">접수번호</span> <b id="doneId"></b></p>
+          <dl class="done__sum" id="doneSummary"></dl>
+          <div class="pay">
+            <p class="pay__title" data-i18n="d.payTitle">아래 계좌로 입금하면 접수가 확정됩니다</p>
+            <div class="pay__acct">
+              <div>
+                <span id="payBank"></span>
+                <b id="payAccount"></b>
+                <span id="payHolder"></span>
+              </div>
+              <button type="button" class="btn btn--sm btn--ghost" id="copyAcct" data-i18n="d.copy">계좌 복사</button>
+            </div>
+            <p class="pay__amount"><span data-i18n="d.amount">입금 금액</span> <b id="payAmount"></b></p>
+            <ul class="pay__notes" id="payNotes"></ul>
+          </div>
+          <p class="done__demo" id="demoNote" hidden>데모 모드: 실제로 접수되지 않았습니다. config.js 의 API_URL 을 설정하면 구글 시트로 접수됩니다.</p>
+          <div class="done__btns">
+            <button type="button" class="btn btn--ghost" id="applyMore" data-i18n="d.more">다른 수업도 신청하기</button>
+            <button type="button" class="btn btn--accent" data-close data-i18n="d.close">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 약관 모달 -->
+  <div class="modal" id="termsModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel modal__panel--doc" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+      <div class="modal__head">
+        <h2 id="termsTitle"></h2>
+        <button type="button" class="iconbtn" data-close aria-label="닫기">✕</button>
+      </div>
+      <div class="modal__body doc" id="termsBody"></div>
+    </div>
+  </div>
+
+  <!-- 데모 접수내역 -->
+  <div class="modal" id="demoModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel modal__panel--wide" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+      <div class="modal__head">
+        <h2 id="demoTitle">데모 접수내역 <small>(실제 운영 시 구글 시트 '신청내역' 탭과 같은 구성)</small></h2>
+        <button type="button" class="iconbtn" data-close aria-label="닫기">✕</button>
+      </div>
+      <div class="modal__body" id="demoBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/classes.js"></script>
+  <script src="assets/terms.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
