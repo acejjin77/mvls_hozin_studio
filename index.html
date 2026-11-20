@@ -30,6 +30,7 @@
         <img src="assets/img/logo-white.png" alt="MVLS HOZIN STUDIO" width="687" height="358" />
       </a>
       <div class="topbar__actions">
+        <button type="button" class="hdr-link" data-open-lookup data-i18n="nav.lookup">신청내역</button>
         <div class="lang" role="group" aria-label="Language">
           <button type="button" data-lang="ko" aria-pressed="true">KR</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
@@ -55,6 +56,7 @@
           <div class="hero__cta">
             <a class="btn btn--accent" href="#classes" data-i18n="hero.cta">수업 고르기</a>
             <a class="btn btn--ghost" id="kakaoHero" href="#" target="_blank" rel="noopener" data-i18n="hero.kakao">카카오 상담</a>
+            <button type="button" class="btn btn--ghost" data-open-lookup data-i18n="nav.lookupLong">신청내역 조회</button>
           </div>
         </div>
 
@@ -178,6 +180,7 @@
   <footer class="footer">
     <div class="wrap">
       <div class="footer__links">
+        <button type="button" class="linkbtn" data-open-lookup data-i18n="nav.lookupLong">신청내역 조회</button>
         <button type="button" class="linkbtn" data-open-terms="refund" data-i18n="ft.refund">수강 안내 및 환불 규정</button>
         <button type="button" class="linkbtn" data-open-terms="privacy" data-i18n="ft.privacy"><b>개인정보 처리방침</b></button>
         <a class="linkbtn" id="adminLink" href="#" target="_blank" rel="noopener" data-i18n="ft.admin">관리자</a>
@@ -218,10 +221,17 @@
             <p class="field__err" data-err="name"></p>
           </div>
 
-          <div class="field">
+          <!-- 한국어: 연락처 필수 / 영문(외국인): 인스타그램 아이디 필수 -->
+          <div class="field" id="phoneField">
             <label for="fPhone" data-i18n="f.phone">연락처</label>
             <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="010-0000-0000" required />
             <p class="field__err" data-err="phone"></p>
+          </div>
+
+          <div class="field" id="igField" hidden>
+            <label for="fIg" data-i18n="f.ig">인스타그램 아이디</label>
+            <div class="ig-input"><span aria-hidden="true">@</span><input id="fIg" name="instagram" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="80" placeholder="your_id" /></div>
+            <p class="field__err" data-err="instagram"></p>
           </div>
 
           <div class="field field--row">
@@ -264,7 +274,7 @@
 
           <details class="more">
             <summary data-i18n="f.more">추가 정보 (선택)</summary>
-            <div class="field">
+            <div class="field" id="receiptField">
               <label for="fReceipt" data-i18n="f.receipt">현금영수증 발급 번호</label>
               <input id="fReceipt" name="cashReceipt" inputmode="numeric" maxlength="20" data-i18n-ph="f.receiptPh" placeholder="휴대폰 번호 또는 사업자번호 (희망 시)" />
             </div>
@@ -335,7 +345,7 @@
           <dl class="done__sum" id="doneSummary"></dl>
           <div class="pay">
             <p class="pay__title" data-i18n="d.payTitle">아래 계좌로 입금하면 접수가 확정됩니다</p>
-            <div class="pay__acct">
+            <div class="pay__acct" id="payAcct">
               <div>
                 <span id="payBank"></span>
                 <b id="payAccount"></b>
@@ -352,6 +362,37 @@
             <button type="button" class="btn btn--accent" data-close data-i18n="d.close">닫기</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 신청내역 조회 -->
+  <div class="modal" id="lookupModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="lookupTitle">
+      <div class="modal__head">
+        <h2 id="lookupTitle" data-i18n="lk.title">신청내역 조회</h2>
+        <button type="button" class="iconbtn" data-close aria-label="닫기">✕</button>
+      </div>
+      <div class="modal__body">
+        <form id="lookupForm" novalidate>
+          <p class="lookup__desc" data-i18n="lk.desc">신청할 때 입력한 이름과 연락처를 입력해주세요.</p>
+          <div class="field">
+            <label for="lkName" data-i18n="f.name">이름</label>
+            <input id="lkName" name="name" autocomplete="name" maxlength="30" />
+          </div>
+          <div class="field" id="lkPhoneField">
+            <label for="lkPhone" data-i18n="f.phone">연락처</label>
+            <input id="lkPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="010-0000-0000" />
+          </div>
+          <div class="field" id="lkIgField" hidden>
+            <label for="lkIg" data-i18n="f.ig">인스타그램 아이디</label>
+            <div class="ig-input"><span aria-hidden="true">@</span><input id="lkIg" name="instagram" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="80" placeholder="your_id" /></div>
+          </div>
+          <p class="form__err" id="lookupError" role="alert" hidden></p>
+          <button class="btn btn--accent btn--block" type="submit" id="lookupBtn" data-i18n="lk.submit">조회하기</button>
+        </form>
+        <div class="lookup__result" id="lookupResult" hidden></div>
       </div>
     </div>
   </div>

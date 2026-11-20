@@ -13,7 +13,7 @@
   /* ───────────────────────── i18n ───────────────────────── */
   var T = {
     ko: {
-      'nav.apply': '수강신청',
+      'nav.apply': '수강신청', 'nav.lookup': '신청내역', 'nav.lookupLong': '신청내역 조회',
       'hero.lead': '전문 스트릿댄스학원 (ᴘᴏᴘᴘɪɴɢ, ʜɪᴘʜᴏᴘ, ʟᴏᴄᴋɪɴɢ, ʜᴏᴜsᴇ ,ᴡᴀᴀᴄᴋɪɴɢ)',
       'hero.place': '방배동', 'hero.ticket': '수강권', 'hero.ticketDesc': '4주권 · 1회권',
       'hero.cta': '수업 고르기', 'hero.kakao': '카카오 상담',
@@ -63,10 +63,15 @@
       'err.SERVER': '접수 중 문제가 생겼어요. 카카오 채널로 문의해주세요.',
       'toast.copied': '계좌번호를 복사했어요', 'toast.copyFail': '복사하지 못했어요. 직접 입력해주세요.',
       'reel.pause': '영상 일시정지', 'reel.play': '영상 재생',
+      'f.ig': '인스타그램 아이디', 'err.ig': '인스타그램 아이디를 입력해주세요. (영문·숫자·밑줄·마침표)',
+      'lk.title': '신청내역 조회', 'lk.desc': '신청할 때 입력한 이름과 연락처를 입력해주세요.', 'lk.submit': '조회하기', 'lk.searching': '조회 중…',
+      'lk.count': '신청 {n}건', 'lk.again': '다시 조회', 'lk.none': '일치하는 신청 내역이 없어요. 신청할 때 입력한 이름과 연락처가 맞는지 확인하거나 카카오 채널로 문의해주세요.',
+      'lk.received': '신청일', 'lk.dates': '수강일', 'lk.amount': '금액', 'lk.pay': '결제',
+      'lk.needName': '이름을 입력해주세요.', 'lk.note': '취소 · 변경은 카카오 채널로 문의해주세요.',
       'days': ['일', '월', '화', '수', '목', '금', '토'],
     },
     en: {
-      'nav.apply': 'Book',
+      'nav.apply': 'Book', 'nav.lookup': 'My bookings', 'nav.lookupLong': 'My bookings',
       'hero.lead': 'Pick a class and book in a minute.<br>See instructors, genres and times at a glance, then join with a 4-week or 1-time pass.',
       'hero.place': 'Bangbae', 'hero.ticket': 'Passes', 'hero.ticketDesc': '4-week · 1-time',
       'hero.cta': 'Find a class', 'hero.kakao': 'Ask on Kakao',
@@ -75,9 +80,9 @@
       'cls.title': 'Classes', 'cls.hint': 'Choose a day, then a class',
       'how.title': 'How to book',
       'how.s1': 'Choose class & pass', 'how.s1d': 'Pick a 4-week or 1-time pass and a start date.',
-      'how.s2': 'Your details', 'how.s2d': 'Just your name and phone number. No sign-up needed.',
-      'how.s3': 'Bank transfer', 'how.s3d': 'Transfer to the account shown, under the applicant’s name.',
-      'how.s4': 'Confirmation', 'how.s4d': 'Once payment is confirmed, the studio will message you.',
+      'how.s2': 'Your details', 'how.s2d': 'Just your name and Instagram ID. No sign-up needed.',
+      'how.s3': 'Pay in cash', 'how.s3d': 'Please pay the class fee in cash at the studio.',
+      'how.s4': 'Confirmation', 'how.s4d': 'The studio will contact you on Instagram.',
       'ws.title': 'Workshops', 'ws.hint': 'Workshops use a separate form', 'ws.go': 'Open form →',
       'loc.map': 'Map', 'loc.kakao': 'Kakao channel',
       'ft.refund': 'Class policy & refunds', 'ft.privacy': '<b>Privacy policy</b>', 'ft.admin': 'Admin',
@@ -93,8 +98,8 @@
       'f.agreeRefund': '[Required] Class policy & refunds', 'f.agreePrivacy': '[Required] Collection and use of personal information',
       'f.agreeGuardian': '[Required] I agree as the legal guardian',
       'f.view': 'View', 'f.submit': 'Book now', 'f.sending': 'Sending…', 'f.total': 'Amount due',
-      'd.title': 'Your application is in', 'd.id': 'Ref.', 'd.payTitle': 'Transfer to this account to confirm',
-      'd.copy': 'Copy', 'd.amount': 'Amount', 'd.more': 'Book another class', 'd.close': 'Close',
+      'd.title': 'Your application is in', 'd.id': 'Ref.', 'd.payTitle': 'Please pay in cash at the studio.',
+      'd.copy': 'Copy', 'd.amount': 'Amount due', 'd.more': 'Book another class', 'd.close': 'Close',
       'd.class': 'Class', 'd.ticket': 'Pass', 'd.when': 'Dates', 'd.name': 'Name',
       'ticket.4W': '{n}-week', 'ticket.1T': '1-time', 'ticket.FULL': 'Full course',
       'ticket.sessions': '{n} classes', 'ticket.one': 'One class',
@@ -116,10 +121,29 @@
       'err.SERVER': 'Something went wrong. Please contact us on Kakao.',
       'toast.copied': 'Account number copied', 'toast.copyFail': 'Could not copy. Please type it in.',
       'reel.pause': 'Pause video', 'reel.play': 'Play video',
+      'f.ig': 'Instagram ID', 'err.ig': 'Please enter your Instagram ID (letters, numbers, _ and .).',
+      'lk.title': 'My bookings', 'lk.desc': 'Enter the name and Instagram ID you used when booking.', 'lk.submit': 'Search', 'lk.searching': 'Searching…',
+      'lk.count': '{n} booking(s)', 'lk.again': 'Search again', 'lk.none': 'No bookings found. Please check your name and Instagram ID, or contact us on Kakao.',
+      'lk.received': 'Booked', 'lk.dates': 'Dates', 'lk.amount': 'Amount', 'lk.pay': 'Payment',
+      'lk.needName': 'Please enter your name.', 'lk.note': 'To cancel or change a booking, please contact us on Kakao.',
       'days': ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
     },
   };
   var DAY_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  var STATUS = {
+    '입금대기': { en: 'Awaiting payment', cls: 'wait' }, '입금확인': { en: 'Paid', cls: 'paid' },
+    '확정': { en: 'Confirmed', cls: 'ok' }, '대기': { en: 'Waitlisted', cls: 'hold' },
+    '취소': { en: 'Cancelled', cls: 'off' }, '환불': { en: 'Refunded', cls: 'off' },
+  };
+  var PAY_EN = { '계좌이체': 'Bank transfer', '현장 현금': 'Cash at studio' };
+
+  /** 영문(외국인) 신청: 연락처 대신 인스타그램 아이디, 결제는 현장 현금 */
+  function isForeign() { return lang === 'en'; }
+  function normIg(v) {
+    var s = String(v || '').trim().toLowerCase()
+      .replace(/^(https?:\/\/)?(www\.)?instagram\.com\//, '').replace(/[/?#].*$/, '').replace(/^@/, '');
+    return /^[a-z0-9._]{1,30}$/.test(s) ? s : '';
+  }
   var INTERESTS = [
     ['팝핑', 'Popping'], ['힙합', 'Hiphop'], ['락킹', 'Locking'], ['왁킹', 'Waacking'],
     ['하우스', 'House'], ['리듬', 'Rhythm'], ['프리스타일', 'Freestyle'], ['트레이닝', 'Training'],
@@ -232,6 +256,7 @@
     $$('[data-i18n]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-i18n')); });
     $$('[data-i18n-ph]').forEach(function (el) { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
     $$('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+    syncLangFields();
     var tg = $('#reelToggle');
     if (tg) tg.setAttribute('aria-label', t(tg.getAttribute('aria-pressed') === 'true' ? 'reel.play' : 'reel.pause'));
     var ym = CFG.scheduleMonth.split('-');
@@ -240,6 +265,15 @@
     $('#heroAddr').textContent = lang === 'ko' ? CFG.studio.address : CFG.studio.addressEn;
     $('#locAddr').textContent = lang === 'ko' ? CFG.studio.address : CFG.studio.addressEn;
     $('#locHours').textContent = (lang === 'ko' ? '카카오 채널 상담 ' + CFG.studio.kakaoHours : 'Kakao chat ' + CFG.studio.kakaoHoursEn);
+  }
+
+  function syncLangFields() {
+    var en = isForeign();
+    $('#phoneField').hidden = en;
+    $('#igField').hidden = !en;
+    $('#receiptField').hidden = en; // 현금영수증은 국내 번호 기준이라 영문에서는 숨김
+    $('#lkPhoneField').hidden = en;
+    $('#lkIgField').hidden = !en;
   }
 
   function renderStatic() {
@@ -518,13 +552,14 @@
       sessionDates: sessionDates(c, state.date, tk),
       amount: tk.price,
       name: (fd.get('name') || '').trim(),
-      phone: formatPhone((fd.get('phone') || '').trim()),
+      phone: isForeign() ? '' : formatPhone((fd.get('phone') || '').trim()),
+      instagram: isForeign() ? normIg(fd.get('instagram')) : '',
       ageGroup: fd.get('ageGroup') || '',
       channel: fd.get('channel') || '사전 신청',
       isMinor: minor,
       guardianName: minor ? (fd.get('guardianName') || '').trim() : '',
       guardianPhone: minor ? formatPhone((fd.get('guardianPhone') || '').trim()) : '',
-      cashReceipt: (fd.get('cashReceipt') || '').trim(),
+      cashReceipt: isForeign() ? '' : (fd.get('cashReceipt') || '').trim(),
       source: fd.get('source') || '',
       interests: fd.getAll('interests'),
       memo: (fd.get('memo') || '').trim(),
@@ -544,9 +579,10 @@
     var c = state.cls;
     if (state.ticketIdx < 0 || !c.tickets[state.ticketIdx]) { showFormError(t('err.ticket')); return false; }
     if (!state.date) { showFormError(t('err.date')); return false; }
-    var name = $('#fName'), phone = $('#fPhone');
+    var name = $('#fName'), phone = $('#fPhone'), ig = $('#fIg');
     if (!name.value.trim()) fail('name', t('err.name'), name);
-    if (!validPhone(phone.value)) fail('phone', t('err.phone'), phone);
+    if (isForeign()) { if (!normIg(ig.value)) fail('instagram', t('err.ig'), ig); }
+    else if (!validPhone(phone.value)) fail('phone', t('err.phone'), phone);
     if ($('#fMinor').checked) {
       var gn = $('#fGName'), gp = $('#fGPhone');
       if (!gn.value.trim()) fail('guardianName', t('err.gname'), gn);
@@ -572,12 +608,14 @@
         setTimeout(function () {
           var list = demoList();
           var dup = list.some(function (r) {
-            return r.phone === payload.phone && r.classId === payload.classId && r.startDate === payload.startDate && r.status !== '취소';
+            var same = (payload.phone && r.phone === payload.phone) || (payload.instagram && normIg(r.instagram) === payload.instagram);
+            return same && r.classId === payload.classId && r.startDate === payload.startDate && r.status !== '취소';
           });
           if (dup) { resolve({ ok: false, code: 'DUPLICATE' }); return; }
           var seq = list.filter(function (r) { return r.id.indexOf(idPrefix()) === 0; }).length + 1;
           var id = idPrefix() + '-' + ('00' + seq).slice(-3);
-          list.push(Object.assign({ id: id, receivedAt: new Date().toLocaleString('ko-KR'), status: '입금대기' }, payload));
+          list.push(Object.assign({ id: id, receivedAt: new Date().toLocaleString('ko-KR'), status: '입금대기' }, payload,
+            { instagram: payload.instagram ? '@' + payload.instagram : '', payMethod: payload.lang === 'en' ? '현장 현금' : '계좌이체' }));
           try { localStorage.setItem(DEMO_KEY, JSON.stringify(list)); } catch (e) { /* 저장 불가 */ }
           resolve({ ok: true, id: id });
         }, 700);
@@ -594,7 +632,7 @@
   function demoList() { try { return JSON.parse(localStorage.getItem(DEMO_KEY) || '[]'); } catch (e) { return []; } }
 
   function saveProfile(p) {
-    var keep = { name: p.name, phone: p.phone, ageGroup: p.ageGroup, isMinor: p.isMinor, guardianName: p.guardianName, guardianPhone: p.guardianPhone, cashReceipt: p.cashReceipt };
+    var keep = { name: p.name, phone: p.phone, instagram: p.instagram, ageGroup: p.ageGroup, isMinor: p.isMinor, guardianName: p.guardianName, guardianPhone: p.guardianPhone, cashReceipt: p.cashReceipt };
     state.profile = keep;
     try { sessionStorage.setItem(PROFILE_KEY, JSON.stringify(keep)); } catch (e) { /* 저장 불가 */ }
   }
@@ -604,6 +642,7 @@
     if (!p) return;
     if (!$('#fName').value) $('#fName').value = p.name || '';
     if (!$('#fPhone').value) $('#fPhone').value = p.phone || '';
+    if (!$('#fIg').value) $('#fIg').value = p.instagram || '';
     if (!$('#fAge').value) $('#fAge').value = p.ageGroup || '';
     if (p.isMinor && !$('#fMinor').checked) { $('#fMinor').checked = true; toggleMinor(); }
     if (!$('#fGName').value) $('#fGName').value = p.guardianName || '';
@@ -639,7 +678,8 @@
       '<dt>' + t('d.class') + '</dt><dd>' + esc(c.instructor + ' · ' + title(c)) + '<br><span class="muted">' + T[lang].days[c.day] + ' ' + c.start + '–' + c.end + '</span></dd>' +
       '<dt>' + t('d.ticket') + '</dt><dd>' + ticketLabel(tk) + '</dd>' +
       '<dt>' + t('d.when') + '</dt><dd>' + p.sessionDates.map(md).join(', ') + '</dd>' +
-      '<dt>' + t('d.name') + '</dt><dd>' + esc(p.name) + ' · ' + esc(p.phone) + '</dd>';
+      '<dt>' + t('d.name') + '</dt><dd>' + esc(p.name) + ' · ' + esc(p.phone || '@' + p.instagram) + '</dd>';
+    $('#payAcct').hidden = isForeign(); // 영문: 계좌 숨김, 제목이 "Please pay in cash at the studio."
     $('#payBank').textContent = CFG.payment.bank;
     $('#payAccount').textContent = CFG.payment.account;
     $('#payHolder').textContent = CFG.payment.holder;
@@ -680,9 +720,111 @@
     } catch (e) { fail(); }
   }
 
+  /* ───────────────────────── 신청내역 조회 ───────────────────────── */
+  var lkForm = $('#lookupForm');
+
+  function openLookup() {
+    lkForm.hidden = false;
+    $('#lookupResult').hidden = true;
+    $('#lookupError').hidden = true;
+    var p = state.profile;
+    if (!p) { try { p = JSON.parse(sessionStorage.getItem(PROFILE_KEY) || 'null'); } catch (e) { p = null; } }
+    if (p) {
+      if (!$('#lkName').value) $('#lkName').value = p.name || '';
+      if (!$('#lkPhone').value) $('#lkPhone').value = p.phone || '';
+      if (!$('#lkIg').value) $('#lkIg').value = p.instagram || '';
+    }
+    openModal('lookupModal');
+  }
+
+  function lookupError(msg) {
+    var el = $('#lookupError');
+    el.textContent = msg;
+    el.hidden = false;
+  }
+
+  function runLookup(q) {
+    if (DEMO) {
+      return new Promise(function (resolve) {
+        setTimeout(function () {
+          var key = q.name.replace(/\s+/g, '').toLowerCase();
+          var items = demoList().filter(function (r) {
+            if (String(r.name).replace(/\s+/g, '').toLowerCase() !== key) return false;
+            return q.phone ? r.phone === q.phone : normIg(r.instagram) === q.instagram;
+          }).map(function (r) {
+            return { id: r.id, receivedAt: r.receivedAt, status: r.status, day: r.day, time: r.time, instructor: r.instructor,
+              classTitle: r.classTitle, ticketLabel: r.ticketLabel, startDate: r.startDate,
+              sessionDates: (r.sessionDates || []).join(', '), amount: r.amount, payMethod: r.payMethod };
+          }).reverse();
+          resolve({ ok: true, items: items });
+        }, 500);
+      });
+    }
+    return send(Object.assign({ action: 'lookup' }, q));
+  }
+
+  function renderLookup(items) {
+    var en = isForeign();
+    var html = '<div class="lookup__head"><span>' + t('lk.count', { n: items.length }) + '</span>' +
+      '<button type="button" class="btn btn--sm btn--ghost" id="lookupAgain">' + t('lk.again') + '</button></div>';
+    if (!items.length) {
+      html += '<p class="empty">' + t('lk.none') + '</p>';
+    } else {
+      html += '<div class="lookup__list">' + items.map(function (it) {
+        var st = STATUS[it.status] || { en: it.status, cls: '' };
+        var dates = String(it.sessionDates || it.startDate).split(/\s*,\s*/).filter(Boolean).map(md).join(', ');
+        var ticket = en ? String(it.ticketLabel).replace(/(\d+)주권/, '$1-week').replace('1회권', '1-time').replace('전체권', 'Full course') : it.ticketLabel;
+        var day = en ? DAY_EN[T.ko.days.indexOf(it.day)] || it.day : it.day;
+        var pay = it.payMethod ? (en ? (PAY_EN[it.payMethod] || it.payMethod) : it.payMethod) : '';
+        return '<article class="lkcard">' +
+          '<div class="lkcard__top"><span class="lkcard__id">' + esc(it.id) + '</span><span class="st st--' + st.cls + '">' + esc(en ? st.en : it.status) + '</span></div>' +
+          '<b class="lkcard__title">' + esc(it.instructor) + ' · ' + esc(it.classTitle) + '</b>' +
+          '<ul class="lkcard__meta">' +
+            '<li>' + esc(day) + ' ' + esc(it.time) + ' · ' + esc(ticket) + '</li>' +
+            '<li>' + t('lk.dates') + ' <b>' + esc(dates) + '</b></li>' +
+            '<li>' + t('lk.amount') + ' <b>' + won(Number(it.amount) || 0) + '</b>' + (pay ? ' · ' + t('lk.pay') + ' <b>' + esc(pay) + '</b>' : '') + '</li>' +
+            '<li>' + t('lk.received') + ' ' + esc(it.receivedAt) + '</li>' +
+          '</ul></article>';
+      }).join('') + '</div><p class="field__help">' + t('lk.note') + '</p>';
+    }
+    var box = $('#lookupResult');
+    box.innerHTML = html;
+    box.hidden = false;
+    lkForm.hidden = true;
+    $('#lookupAgain').addEventListener('click', function () { box.hidden = true; lkForm.hidden = false; $('#lkName').focus(); });
+  }
+
+  lkForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    $('#lookupError').hidden = true;
+    var name = $('#lkName').value.trim();
+    if (!name) { lookupError(t('lk.needName')); $('#lkName').focus(); return; }
+    var q = { name: name };
+    if (isForeign()) {
+      q.instagram = normIg($('#lkIg').value);
+      if (!q.instagram) { lookupError(t('err.ig')); $('#lkIg').focus(); return; }
+    } else {
+      if (!validPhone($('#lkPhone').value)) { lookupError(t('err.phone')); $('#lkPhone').focus(); return; }
+      q.phone = formatPhone($('#lkPhone').value.trim());
+    }
+    var btn = $('#lookupBtn');
+    btn.disabled = true;
+    btn.textContent = t('lk.searching');
+    runLookup(q).then(function (res) {
+      if (res && res.ok) { renderLookup(res.items || []); return; }
+      var code = (res && res.code) || 'SERVER';
+      lookupError(t('err.' + code) !== 'err.' + code ? t('err.' + code) : t('err.SERVER'));
+    }).catch(function () {
+      lookupError(t('err.network'));
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = t('lk.submit');
+    });
+  });
+
   function showDemoAdmin() {
     var rows = demoList();
-    var cols = [['id', '접수번호'], ['receivedAt', '접수일시'], ['status', '상태'], ['startDate', '수강시작일'], ['day', '요일'], ['time', '시간'], ['instructor', '강사'], ['classTitle', '수업명'], ['ticketLabel', '권종'], ['amount', '금액'], ['name', '이름'], ['phone', '연락처'], ['ageGroup', '연령대'], ['channel', '신청구분'], ['memo', '문의사항']];
+    var cols = [['id', '접수번호'], ['receivedAt', '접수일시'], ['status', '상태'], ['startDate', '수강시작일'], ['day', '요일'], ['time', '시간'], ['instructor', '강사'], ['classTitle', '수업명'], ['ticketLabel', '권종'], ['amount', '금액'], ['name', '이름'], ['phone', '연락처'], ['instagram', '인스타그램'], ['payMethod', '결제방식'], ['ageGroup', '연령대'], ['channel', '신청구분'], ['memo', '문의사항']];
     $('#demoBody').innerHTML = rows.length
       ? '<div class="demowrap"><table class="demotbl"><thead><tr>' + cols.map(function (c) { return '<th>' + c[1] + '</th>'; }).join('') + '</tr></thead><tbody>' +
         rows.slice().reverse().map(function (r) {
@@ -700,6 +842,7 @@
     if (tab) { activeDay = +tab.dataset.day; renderDayTabs(); renderClassList(); tab = $('.daytab[data-day="' + activeDay + '"]'); if (tab) tab.focus(); return; }
     var lb = e.target.closest('.lang button');
     if (lb) { lang = lb.dataset.lang; try { localStorage.setItem(LANG_KEY, lang); } catch (x) { /* 저장 불가 */ } renderAll(); return; }
+    if (e.target.closest('[data-open-lookup]')) { openLookup(); return; }
     var tm = e.target.closest('[data-open-terms]');
     if (tm) { openTerms(tm.getAttribute('data-open-terms')); return; }
     var cl = e.target.closest('[data-close]');
@@ -728,7 +871,7 @@
     } else if (tg.hasAttribute('data-agree') || tg.name === 'agreeGuardian') syncAgreeAll();
     $('#formError').hidden = true;
   });
-  ['#fPhone', '#fGPhone'].forEach(function (s) {
+  ['#fPhone', '#fGPhone', '#lkPhone'].forEach(function (s) {
     $(s).addEventListener('input', function (e) {
       var v = e.target.value;
       if (/^[\d-]*$/.test(v)) e.target.value = formatPhone(v);

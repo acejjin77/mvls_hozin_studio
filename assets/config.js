@@ -10,7 +10,7 @@ window.MVLS_CONFIG = {
    * 비워두면 "데모 모드"로 동작합니다: 실제 접수 없이 이 브라우저에만 저장됩니다.
    * 예: 'https://script.google.com/macros/s/AKfycb..../exec'
    */
-  API_URL: 'https://script.google.com/macros/s/AKfycbwzekCtfuQlyZrw9lLZsWsBlxdmrC4elpsgYOBTATMgpWQNI-fVNYkPtmkf06nlx1dwIQ/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbxOs62Ssdnyp4UTOMaO5SC9wgxyG5tM7t8UnOcgATvwW6CE8DzFa77CaFOFgWhrGSO19A/exec',
 
   /** 관리자(직원)용 구글 시트 주소 - 푸터 '관리자' 링크. 시트 공유 권한으로 접근을 통제합니다. */
   ADMIN_SHEET_URL: '',
@@ -45,7 +45,11 @@ window.MVLS_CONFIG = {
     mapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EB%B0%A9%EB%B0%B0%EB%8F%99%20437-23',
   },
 
-  /** 수납 안내 (현재 구글폼 안내문과 동일) */
+  /**
+   * 수납 안내
+   *  - 한국어 신청: 계좌이체 (아래 계좌 표시)
+   *  - 영문(외국인) 신청: 현장 현금 → 완료 화면에 계좌 대신 "Please pay in cash at the studio." 표시
+   */
   payment: {
     bank: '신한은행',
     holder: '마블러스(강유진)',
@@ -56,8 +60,7 @@ window.MVLS_CONFIG = {
       '22:00 이후 신청 건은 다음 날 15:30부터 순차적으로 안내드립니다.',
     ],
     notesEn: [
-      'Your registration is confirmed only after payment.',
-      'Please make the transfer under the same name as the applicant.',
+      'We will contact you on Instagram.',
       'Applications after 22:00 are answered from 15:30 the next day.',
     ],
   },
@@ -103,5 +106,5 @@ window.MVLS_CONFIG = {
   ],
 
   /** 동의 문구 버전 - 문구를 바꾸면 버전도 올려주세요 (신청 데이터에 함께 저장) */
-  termsVersion: '2026-11-v1',
+  termsVersion: '2026-11-v2',
 };

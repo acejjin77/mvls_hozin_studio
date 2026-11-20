@@ -13,19 +13,32 @@
  *  NOTIFY_EMAIL  새 신청 알림을 받을 메일 (쉼표로 여러 개). 비우면 메일 안 보냄.
  */
 
+var CODE_VERSION = '2026-11-20-insta-lookup'; // 배포 URL 을 브라우저로 열면 보이는 값. 코드 수정 시 함께 변경
 var SHEET_APPS = '신청내역';
 var SHEET_SUMMARY = '수업별현황';
 var TZ = 'Asia/Seoul';
 var STATUS = ['입금대기', '입금확인', '확정', '대기', '취소', '환불'];
 var INACTIVE = ['취소', '환불'];
 var RATE_LIMIT_PER_10MIN = 6;
+var LOOKUP_PER_KEY_10MIN = 10; // 같은 연락처/인스타로 10분에 조회 가능 횟수
+var LOOKUP_PER_MIN = 40;       // 전체 조회 분당 상한 (무작위 대입 방지)
+var LOOKUP_MAX_ITEMS = 20;
 
-/** [키, 헤더, 열 너비] - 순서를 바꾸면 기존 시트와 어긋나므로 뒤에만 추가하세요 */
+/**
+ * [키, 헤더, 열 너비]
+ * 시트에는 '헤더 이름'으로 찾아서 저장합니다. 시트에서 열 순서를 바꾸거나 열을 옮겨도 됩니다.
+ * 단, 헤더 이름(1행 글자)은 바꾸지 마세요. 헤더를 지우면 다음 저장 때 맨 오른쪽에 다시 만들어집니다.
+ * 이 배열의 순서는 '새 시트를 처음 만들 때'의 열 순서입니다.
+ */
 var COLS = [
   ['id', '접수번호', 120],
   ['receivedAt', '접수일시', 150],
   ['status', '상태', 90],
   ['adminMemo', '관리자메모', 180],
+  ['name', '이름', 90],
+  ['phone', '연락처', 120],
+  ['instagram', '인스타그램', 130],
+  ['payMethod', '결제방식', 90],
   ['startDate', '수강시작일', 100],
   ['day', '요일', 50],
   ['time', '시간', 100],
@@ -33,8 +46,6 @@ var COLS = [
   ['classTitle', '수업명', 180],
   ['ticketLabel', '권종', 70],
   ['amount', '금액', 90],
-  ['name', '이름', 90],
-  ['phone', '연락처', 120],
   ['ageGroup', '연령대', 70],
   ['isMinor', '14세미만', 70],
   ['guardianName', '보호자명', 90],
@@ -65,35 +76,32 @@ function setup() {
   ss.setSpreadsheetTimeZone(TZ);
 
   var sh = ss.getSheetByName(SHEET_APPS) || ss.insertSheet(SHEET_APPS, 0);
-  var headers = COLS.map(function (c) { return c[1]; });
-  if (sh.getMaxColumns() < headers.length) sh.insertColumnsAfter(sh.getMaxColumns(), headers.length - sh.getMaxColumns());
-  sh.getRange(1, 1, 1, headers.length).setValues([headers])
-    .setFontWeight('bold').setBackground('#1d3b2a').setFontColor('#ffffff');
+  var map = headerMap_(sh); // 기존 헤더는 그대로 두고, 없는 헤더만 오른쪽 끝에 추가
+  var width = sh.getLastColumn();
+  sh.getRange(1, 1, 1, width).setFontWeight('bold').setBackground('#1d3b2a').setFontColor('#ffffff');
   sh.setFrozenRows(1);
-  sh.setFrozenColumns(3);
-  COLS.forEach(function (c, i) { sh.setColumnWidth(i + 1, c[2]); });
+  COLS.forEach(function (c) { sh.setColumnWidth(map[c[1]], c[2]); });
 
   var rows = sh.getMaxRows() - 1;
-  var statusCol = col_('status');
-  var statusRange = sh.getRange(2, statusCol, rows, 1);
+  var statusRange = sh.getRange(2, colOf_(map, 'status'), rows, 1);
   statusRange.setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(STATUS, true).setAllowInvalid(false).build()
   );
-  sh.getRange(2, col_('receivedAt'), rows, 1).setNumberFormat('yyyy-mm-dd hh:mm');
-  sh.getRange(2, col_('amount'), rows, 1).setNumberFormat('#,##0');
+  sh.getRange(2, colOf_(map, 'receivedAt'), rows, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+  sh.getRange(2, colOf_(map, 'amount'), rows, 1).setNumberFormat('#,##0');
 
   var colors = { '입금대기': '#fff4c2', '입금확인': '#d6ecff', '확정': '#d4f5df', '대기': '#ece3ff', '취소': '#eeeeee', '환불': '#ffd9d6' };
   var rules = Object.keys(colors).map(function (s) {
     return SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo(s).setBackground(colors[s]).setRanges([statusRange]).build();
   });
   sh.setConditionalFormatRules(rules);
-  if (!sh.getFilter()) sh.getRange(1, 1, sh.getMaxRows(), headers.length).createFilter();
+  if (!sh.getFilter()) sh.getRange(1, 1, sh.getMaxRows(), width).createFilter();
 
   // 수업별 현황 (취소·환불 제외)
   var sm = ss.getSheetByName(SHEET_SUMMARY) || ss.insertSheet(SHEET_SUMMARY, 1);
   sm.clear();
-  var L = function (k) { return letter_(col_(k)); };
-  var src = "'" + SHEET_APPS + "'!A1:" + letter_(COLS.length);
+  var L = function (k) { return letter_(colOf_(map, k)); }; // 현재 열 위치 기준으로 수식 생성
+  var src = "'" + SHEET_APPS + "'!A1:" + letter_(width);
   sm.getRange('A1').setValue('수업 · 시작일별 신청 (취소·환불 제외)').setFontWeight('bold');
   sm.getRange('A2').setFormula(
     '=QUERY(' + src + ', "select ' + [L('startDate'), L('day'), L('time'), L('instructor'), L('classTitle'), L('ticketLabel')].join(', ') +
@@ -117,7 +125,7 @@ function setup() {
 
 /** 상태 확인용: 배포 URL 을 브라우저로 열면 {"ok":true} 가 보이면 정상 */
 function doGet() {
-  return json_({ ok: true, service: 'mvls-apply' });
+  return json_({ ok: true, service: 'mvls-apply', version: CODE_VERSION });
 }
 
 function doPost(e) {
@@ -125,7 +133,8 @@ function doPost(e) {
   try {
     var body = e && e.postData && e.postData.contents;
     if (!body || body.length > 20000) return json_({ ok: false, code: 'INVALID' });
-    out = handleApply_(JSON.parse(body));
+    var p = JSON.parse(body);
+    out = (p && p.action === 'lookup') ? handleLookup_(p) : handleApply_(p);
   } catch (err) {
     console.error(err && err.stack ? err.stack : err);
     out = { ok: false, code: 'SERVER' };
@@ -152,8 +161,7 @@ function handleApply_(p) {
   if (!v.ok) return v;
   var a = v.data;
 
-  var digits = a.phone.replace(/\D/g, '');
-  var rlKey = 'rl_' + digits;
+  var rlKey = 'rl_' + (a.phone ? a.phone.replace(/\D/g, '') : 'ig_' + a.instagram);
   var count = Number(cache.get(rlKey) || 0);
   if (count >= RATE_LIMIT_PER_10MIN) return { ok: false, code: 'RATE_LIMIT' };
 
@@ -164,13 +172,17 @@ function handleApply_(p) {
     var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPS);
     if (!sh) throw new Error('신청내역 시트가 없습니다. setup 을 먼저 실행하세요.');
 
-    if (isDuplicate_(sh, a)) {
+    if (isDuplicate_(sh, a, headerMap_(sh))) {
       result = { ok: false, code: 'DUPLICATE' };
     } else {
       a.id = nextId_();
       a.receivedAt = new Date();
       a.status = '입금대기';
-      sh.appendRow(COLS.map(function (c) { return cell_(a[c[0]]); }));
+      var map = headerMap_(sh);
+      var row = [];
+      for (var i = 0; i < sh.getLastColumn(); i++) row.push('');
+      COLS.forEach(function (c) { row[map[c[1]] - 1] = cell_(a[c[0]]); });
+      sh.appendRow(row);
       result = { ok: true, id: a.id };
     }
   } finally {
@@ -189,8 +201,10 @@ function validate_(p) {
   var bad = function (field) { return { ok: false, code: 'INVALID', field: field }; };
   var today = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
 
+  var isEn = p.lang === 'en';
   var name = str_(p.name, 30);
   var phone = normPhone_(p.phone);
+  var instagram = normIg_(p.instagram);
   var classId = str_(p.classId, 40);
   var startDate = str_(p.startDate, 10);
   var ticketType = str_(p.ticketType, 4);
@@ -199,7 +213,9 @@ function validate_(p) {
   var consents = p.consents || {};
 
   if (!name) return bad('name');
-  if (!phone) return bad('phone');
+  // 한국어 신청: 연락처 필수 / 영문(외국인) 신청: 인스타그램 아이디 필수 (현장 현금 결제)
+  if (isEn) { if (!instagram) return bad('instagram'); }
+  else if (!phone) return bad('phone');
   if (!/^[A-Z0-9-]{3,40}$/.test(classId)) return bad('classId');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || startDate < today) return bad('startDate');
   if (['4W', '1T', 'FULL'].indexOf(ticketType) < 0) return bad('ticketType');
@@ -233,6 +249,8 @@ function validate_(p) {
       amount: amount,
       name: name,
       phone: phone,
+      instagram: instagram ? '@' + instagram : '',
+      payMethod: isEn ? '현장 현금' : '계좌이체',
       ageGroup: str_(p.ageGroup, 10),
       isMinor: isMinor ? 'Y' : '',
       guardianName: guardianName,
@@ -250,15 +268,71 @@ function validate_(p) {
   };
 }
 
-/** 같은 연락처 + 같은 수업 + 같은 시작일 (취소·환불 제외) */
-function isDuplicate_(sh, a) {
+/* ───────────────────────── 신청내역 조회 ─────────────────────────
+ * 이름 + 연락처(또는 인스타그램 아이디)가 모두 일치하는 신청만 돌려줍니다.
+ * 개인정보 노출을 줄이기 위해 수업·일정·금액·상태만 반환하고
+ * 연락처·보호자·현금영수증·문의사항·관리자메모는 반환하지 않습니다.
+ */
+function handleLookup_(p) {
+  var name = normName_(p.name);
+  var phone = normPhone_(p.phone);
+  var ig = normIg_(p.instagram);
+  if (!name || (!phone && !ig)) return { ok: false, code: 'INVALID' };
+
+  var cache = CacheService.getScriptCache();
+  var gKey = 'lk_' + Utilities.formatDate(new Date(), TZ, 'yyyyMMddHHmm');
+  var g = Number(cache.get(gKey) || 0);
+  if (g >= LOOKUP_PER_MIN) return { ok: false, code: 'RATE_LIMIT' };
+  cache.put(gKey, String(g + 1), 120);
+  var kKey = 'lkk_' + (phone ? phone.replace(/\D/g, '') : 'ig_' + ig);
+  var k = Number(cache.get(kKey) || 0);
+  if (k >= LOOKUP_PER_KEY_10MIN) return { ok: false, code: 'RATE_LIMIT' };
+  cache.put(kKey, String(k + 1), 600);
+
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPS);
+  if (!sh || sh.getLastRow() < 2) return { ok: true, items: [] };
+  var map = headerMap_(sh);
+  var values = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+  var idx = {};
+  COLS.forEach(function (c) { idx[c[0]] = map[c[1]] - 1; });
+
+  var items = values.filter(function (row) {
+    if (!row[idx.id] || normName_(row[idx.name]) !== name) return false;
+    if (phone) return String(row[idx.phone]) === phone;
+    return normIg_(row[idx.instagram]) === ig;
+  }).map(function (row) {
+    var at = row[idx.receivedAt];
+    return {
+      id: String(row[idx.id]),
+      receivedAt: at instanceof Date ? Utilities.formatDate(at, TZ, 'yyyy-MM-dd HH:mm') : String(at),
+      status: String(row[idx.status] || ''),
+      day: String(row[idx.day] || ''),
+      time: String(row[idx.time] || ''),
+      instructor: String(row[idx.instructor] || ''),
+      classTitle: String(row[idx.classTitle] || ''),
+      ticketLabel: String(row[idx.ticketLabel] || ''),
+      startDate: dateStr_(row[idx.startDate]),
+      sessionDates: String(row[idx.sessionDates] || ''),
+      amount: Number(row[idx.amount]) || 0,
+      payMethod: String(row[idx.payMethod] || ''),
+    };
+  });
+  items.sort(function (a, b) { return a.receivedAt < b.receivedAt ? 1 : -1; });
+  return { ok: true, items: items.slice(0, LOOKUP_MAX_ITEMS) };
+}
+
+/** 같은 연락처(또는 인스타그램) + 같은 수업 + 같은 시작일 (취소·환불 제외) */
+function isDuplicate_(sh, a, map) {
   var last = sh.getLastRow();
   if (last < 2) return false;
-  var values = sh.getRange(2, 1, last - 1, COLS.length).getValues();
-  var iP = col_('phone') - 1, iC = col_('classId') - 1, iD = col_('startDate') - 1, iS = col_('status') - 1;
+  var values = sh.getRange(2, 1, last - 1, sh.getLastColumn()).getValues();
+  var iP = colOf_(map, 'phone') - 1, iG = colOf_(map, 'instagram') - 1;
+  var iC = colOf_(map, 'classId') - 1, iD = colOf_(map, 'startDate') - 1, iS = colOf_(map, 'status') - 1;
   for (var r = 0; r < values.length; r++) {
     var row = values[r];
-    if (String(row[iP]) === a.phone && String(row[iC]) === a.classId && dateStr_(row[iD]) === a.startDate &&
+    var same = (a.phone && String(row[iP]) === a.phone) ||
+               (a.instagram && normIg_(row[iG]) === normIg_(a.instagram));
+    if (same && String(row[iC]) === a.classId && dateStr_(row[iD]) === a.startDate &&
         INACTIVE.indexOf(String(row[iS])) < 0) return true;
   }
   return false;
@@ -287,7 +361,7 @@ function notify_(a) {
         '수업: ' + a.day + ' ' + a.time + ' ' + a.instructor + ' ' + a.classTitle,
         '권종: ' + a.ticketLabel + ' (' + a.amount.toLocaleString() + '원)',
         '일정: ' + a.sessionDates,
-        '신청자: ' + a.name + ' / ' + a.phone + (a.isMinor ? ' (14세 미만, 보호자 ' + a.guardianName + ' ' + a.guardianPhone + ')' : ''),
+        '신청자: ' + a.name + ' / ' + (a.phone || a.instagram) + ' / 결제: ' + a.payMethod + (a.isMinor ? ' (14세 미만, 보호자 ' + a.guardianName + ' ' + a.guardianPhone + ')' : ''),
         a.memo ? '문의: ' + a.memo : '',
         '',
         '신청내역 시트: ' + url,
@@ -318,6 +392,17 @@ function normPhone_(v) {
   return '';
 }
 
+/** 인스타그램 아이디 정규화: '@아이디', 'instagram.com/아이디' 모두 허용 → 소문자 아이디 */
+function normIg_(v) {
+  var s = str_(v, 100).toLowerCase().replace(/^(https?:\/\/)?(www\.)?instagram\.com\//, '').replace(/[/?#].*$/, '').replace(/^@/, '');
+  return /^[a-z0-9._]{1,30}$/.test(s) ? s : '';
+}
+
+/** 이름 비교용: 공백 제거 + 소문자 */
+function normName_(v) {
+  return str_(v, 30).replace(/\s+/g, '').toLowerCase();
+}
+
 /**
  * 시트에 쓸 값. 문자열은 앞에 ' 를 붙여 항상 '텍스트'로 저장합니다.
  *  - "=..." 같은 수식 주입 방지
@@ -333,8 +418,28 @@ function dateStr_(v) {
   return v instanceof Date ? Utilities.formatDate(v, TZ, 'yyyy-MM-dd') : String(v);
 }
 
-function col_(key) {
-  for (var i = 0; i < COLS.length; i++) if (COLS[i][0] === key) return i + 1;
+/**
+ * 1행 헤더 이름 → 열 번호(1부터). COLS 에 있는데 시트에 없는 헤더는 오른쪽 끝에 추가합니다.
+ * 직원이 시트에서 열 순서를 바꿔도 이름으로 찾기 때문에 엉뚱한 칸에 저장되지 않습니다.
+ */
+function headerMap_(sh) {
+  var lastCol = sh.getLastColumn();
+  var head = lastCol ? sh.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  var map = {};
+  head.forEach(function (h, i) { h = String(h).trim(); if (h && !map[h]) map[h] = i + 1; });
+  var missing = COLS.filter(function (c) { return !map[c[1]]; }).map(function (c) { return c[1]; });
+  if (missing.length) {
+    var start = lastCol + 1;
+    var need = start + missing.length - 1 - sh.getMaxColumns();
+    if (need > 0) sh.insertColumnsAfter(sh.getMaxColumns(), need);
+    sh.getRange(1, start, 1, missing.length).setValues([missing]);
+    missing.forEach(function (h, i) { map[h] = start + i; });
+  }
+  return map;
+}
+
+function colOf_(map, key) {
+  for (var i = 0; i < COLS.length; i++) if (COLS[i][0] === key) return map[COLS[i][1]];
   throw new Error('unknown column ' + key);
 }
 
