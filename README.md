@@ -19,6 +19,8 @@
 | `assets/classes.js` | **월별 시간표** (강사·시간·권종·금액·휴강·대강) | 운영 (매달) |
 | `assets/terms.js` | 수강 안내·환불 규정, 개인정보 동의 문구 | 대표 확인 |
 | `apps-script/Code.gs` | 접수 서버 (검증·중복 방지·시트 저장·메일 알림) | 개발자 |
+| `assets/media/` | 메인 화면 수업 영상 3개(`class-1~3.mp4`)와 포스터 이미지(`.jpg`) | 운영 |
+| `assets/img/` | 로고(`logo-white.png`), 파비콘, 링크 미리보기 이미지(`og-image.jpg`) | 개발자 |
 
 `config.js` 의 `API_URL` 이 비어 있으면 **데모 모드**입니다. 실제 접수 없이 브라우저에만 저장되고, 푸터의 "데모 접수내역"으로 확인할 수 있습니다.
 
@@ -79,6 +81,23 @@
 - 기간제 수업의 n주권은 **기간 안에 n회가 모두 들어가는 시작일만** 선택할 수 있습니다. 남은 회차가 부족하면 1회권만 열립니다.
 - 시작일 선택 범위는 오늘부터 `bookingWindowWeeks`(기본 6주)입니다.
 
+## 4-1. 메인 영상 바꾸기
+
+메인 화면은 영상 3개를 **각 10초씩 재생 → 옆으로 슬라이드 → 무한 반복**합니다. 화면 밖으로 스크롤하거나 다른 탭으로 가면 멈추고, 우측 상단 버튼으로 일시정지할 수 있습니다.
+
+새 영상으로 바꿀 때는 원본을 그대로 올리지 말고 10초로 잘라 압축해서 **같은 파일 이름**으로 덮어씁니다. (아이폰 원본은 수십~수백 MB라 페이지가 느려지고, GitHub는 100MB 넘는 파일을 거부합니다)
+
+```bash
+# 원본.MP4 의 12초 지점부터 10초, 세로 720x1280, 소리 없음
+ffmpeg -ss 12 -i 원본.MP4 -t 10 -an \
+  -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=30,format=yuv420p" \
+  -c:v libx264 -preset veryfast -crf 27 -maxrate 2.6M -bufsize 5M -movflags +faststart assets/media/class-1.mp4
+# 포스터(첫 화면) 이미지
+ffmpeg -ss 0.3 -i assets/media/class-1.mp4 -frames:v 1 -q:v 5 assets/media/class-1.jpg
+```
+
+영상 개수를 바꾸려면 `index.html` 의 `reel__slide` 와 `reel__bar` 를 같은 개수로 추가·삭제하면 됩니다.
+
 ## 5. 오픈 전 확인할 항목
 
 코드에 `[확인 필요]` 로 표시해 두었습니다.
@@ -95,6 +114,7 @@
    - HAN SMASH 기간 시작일 미기재, 5000 HARD TRAINING 2회 전체권 금액 미기재
 6. 1회권 40,000원 / 4주권 금액이 교육청에 등록된 교습비와 일치하는지 (명세서 A-3)
 7. 14세 미만 수강생 여부 — 보호자 정보·동의 입력란은 넣어두었음 (명세서 A-4)
+8. `index.html` 의 `og:image` 주소 — 카카오톡 링크 미리보기용. 지금은 GitHub Pages 기본 주소(`acejjin77.github.io/mvls_hozin_studio`)로 되어 있으니 다른 도메인·호스팅을 쓰면 그 주소로 변경
 
 ## 6. 알아둘 한계 (1차 범위)
 

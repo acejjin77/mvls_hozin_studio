@@ -7,7 +7,15 @@
   <meta name="description" content="MVLS HOZIN STUDIO 방배동 댄스 스튜디오 - 시간표 확인과 온라인 수강신청 (4주권 · 1회권)" />
   <meta property="og:title" content="MVLS HOZIN STUDIO | 수강신청" />
   <meta property="og:description" content="시간표 확인하고 바로 신청하세요. 4주권 · 1회권" />
+  <meta property="og:type" content="website" />
+  <!-- 카카오톡·인스타 링크 미리보기는 절대 주소가 필요합니다. 커스텀 도메인을 연결하면 그 주소로 바꿔주세요. -->
+  <meta property="og:image" content="https://acejjin77.github.io/mvls_hozin_studio/assets/img/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta name="theme-color" content="#0d0d0e" />
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -19,8 +27,7 @@
   <header class="topbar">
     <div class="wrap topbar__in">
       <a class="brand" href="#top" aria-label="MVLS HOZIN STUDIO 홈">
-        <span class="brand__mark">MVLS</span>
-        <span class="brand__name">HOZIN STUDIO</span>
+        <img src="assets/img/logo-white.png" alt="MVLS HOZIN STUDIO" width="687" height="358" />
       </a>
       <div class="topbar__actions">
         <div class="lang" role="group" aria-label="Language">
@@ -33,24 +40,47 @@
   </header>
 
   <main id="top">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="wrap">
-        <p class="eyebrow"><span class="dot"></span><span id="heroMonth">NOVEMBER 2026</span> · CLASS SCHEDULE</p>
-        <h1 class="hero__title">
-          <span>MVLS</span>
-          <span class="hero__accent">HOZIN</span>
-          <span>STUDIO</span>
-        </h1>
-        <p class="hero__lead" data-i18n="hero.lead">원하는 수업을 고르고 바로 신청하세요.<br />강사·장르·시간을 한눈에 보고, 4주권 또는 1회권으로 등록할 수 있습니다.</p>
-        <ul class="hero__facts">
-          <li><b>MON — FRI</b><span>18:20 – 22:30</span></li>
-          <li><b data-i18n="hero.place">방배동</b><span id="heroAddr">서울시 서초구 방배동 437-23</span></li>
-          <li><b data-i18n="hero.ticket">수강권</b><span data-i18n="hero.ticketDesc">4주권 · 1회권</span></li>
-        </ul>
-        <div class="hero__cta">
-          <a class="btn btn--accent" href="#classes" data-i18n="hero.cta">수업 고르기</a>
-          <a class="btn btn--ghost" id="kakaoHero" href="#" target="_blank" rel="noopener" data-i18n="hero.kakao">카카오 상담</a>
+    <!-- HERO: 수업 영상 슬라이드 (영상당 10초, 3개 무한 반복) -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" id="heroBg" aria-hidden="true"></div>
+      <div class="wrap hero__in">
+        <div class="hero__copy">
+          <h1 class="hero__logo"><img src="assets/img/logo-white.png" alt="MVLS HOZIN STUDIO" width="687" height="358" /></h1>
+          <p class="hero__lead" data-i18n="hero.lead">전문 스트릿댄스학원 (ᴘᴏᴘᴘɪɴɢ, ʜɪᴘʜᴏᴘ, ʟᴏᴄᴋɪɴɢ, ʜᴏᴜsᴇ ,ᴡᴀᴀᴄᴋɪɴɢ)</p>
+          <ul class="hero__facts">
+            <li><b>MONDAY — FRIDAY</b><span>18:20 – 22:30</span></li>
+            <li><b data-i18n="hero.place">방배동</b><span id="heroAddr">서울시 서초구 방배동 437-23</span></li>
+            <li><b data-i18n="hero.ticket">수강권</b><span data-i18n="hero.ticketDesc">4주권 · 1회권</span></li>
+          </ul>
+          <div class="hero__cta">
+            <a class="btn btn--accent" href="#classes" data-i18n="hero.cta">수업 고르기</a>
+            <a class="btn btn--ghost" id="kakaoHero" href="#" target="_blank" rel="noopener" data-i18n="hero.kakao">카카오 상담</a>
+          </div>
+        </div>
+
+        <!-- 영상 교체: assets/media 에 같은 이름으로 덮어쓰기 (세로 720x1280, 10초, 무음 권장) -->
+        <div class="reel" id="reel" role="region" aria-roledescription="carousel" aria-label="수업 영상">
+          <div class="reel__track">
+            <div class="reel__slide is-active" data-poster="assets/media/class-1.jpg">
+              <video muted playsinline preload="auto" poster="assets/media/class-1.jpg" src="assets/media/class-1.mp4" aria-hidden="true"></video>
+            </div>
+            <div class="reel__slide" data-poster="assets/media/class-2.jpg">
+              <video muted playsinline preload="metadata" poster="assets/media/class-2.jpg" src="assets/media/class-2.mp4" aria-hidden="true"></video>
+            </div>
+            <div class="reel__slide" data-poster="assets/media/class-3.jpg">
+              <video muted playsinline preload="metadata" poster="assets/media/class-3.jpg" src="assets/media/class-3.mp4" aria-hidden="true"></video>
+            </div>
+          </div>
+          <div class="reel__shade" aria-hidden="true"></div>
+          <div class="reel__bars">
+            <button type="button" class="reel__bar" aria-label="영상 1"><i></i></button>
+            <button type="button" class="reel__bar" aria-label="영상 2"><i></i></button>
+            <button type="button" class="reel__bar" aria-label="영상 3"><i></i></button>
+          </div>
+          <button type="button" class="reel__toggle" id="reelToggle" aria-label="영상 일시정지" aria-pressed="false">
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+          </button>
         </div>
       </div>
     </section>

@@ -14,7 +14,7 @@
   var T = {
     ko: {
       'nav.apply': '수강신청',
-      'hero.lead': '원하는 수업을 고르고 바로 신청하세요.<br>강사·장르·시간을 한눈에 보고, 4주권 또는 1회권으로 등록할 수 있습니다.',
+      'hero.lead': '전문 스트릿댄스학원 (ᴘᴏᴘᴘɪɴɢ, ʜɪᴘʜᴏᴘ, ʟᴏᴄᴋɪɴɢ, ʜᴏᴜsᴇ ,ᴡᴀᴀᴄᴋɪɴɢ)',
       'hero.place': '방배동', 'hero.ticket': '수강권', 'hero.ticketDesc': '4주권 · 1회권',
       'hero.cta': '수업 고르기', 'hero.kakao': '카카오 상담',
       'notice.title': '휴강 · 대강 안내',
@@ -62,6 +62,7 @@
       'err.INVALID': '입력값을 다시 확인해주세요.',
       'err.SERVER': '접수 중 문제가 생겼어요. 카카오 채널로 문의해주세요.',
       'toast.copied': '계좌번호를 복사했어요', 'toast.copyFail': '복사하지 못했어요. 직접 입력해주세요.',
+      'reel.pause': '영상 일시정지', 'reel.play': '영상 재생',
       'days': ['일', '월', '화', '수', '목', '금', '토'],
     },
     en: {
@@ -114,6 +115,7 @@
       'err.INVALID': 'Please check your entries.',
       'err.SERVER': 'Something went wrong. Please contact us on Kakao.',
       'toast.copied': 'Account number copied', 'toast.copyFail': 'Could not copy. Please type it in.',
+      'reel.pause': 'Pause video', 'reel.play': 'Play video',
       'days': ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
     },
   };
@@ -230,9 +232,10 @@
     $$('[data-i18n]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-i18n')); });
     $$('[data-i18n-ph]').forEach(function (el) { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
     $$('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+    var tg = $('#reelToggle');
+    if (tg) tg.setAttribute('aria-label', t(tg.getAttribute('aria-pressed') === 'true' ? 'reel.play' : 'reel.pause'));
     var ym = CFG.scheduleMonth.split('-');
     var monthEn = new Date(Date.UTC(+ym[0], +ym[1] - 1, 1)).toLocaleString('en-US', { month: 'long', timeZone: 'UTC' }).toUpperCase();
-    $('#heroMonth').textContent = monthEn + ' ' + ym[0];
     $('#ttMonth').textContent = ym[0] + '.' + ym[1] + ' · TIMETABLE';
     $('#heroAddr').textContent = lang === 'ko' ? CFG.studio.address : CFG.studio.addressEn;
     $('#locAddr').textContent = lang === 'ko' ? CFG.studio.address : CFG.studio.addressEn;
@@ -739,8 +742,120 @@
   });
   $('#demoAdminBtn').addEventListener('click', showDemoAdmin);
 
+
+  /* ───────────────────────── 히어로 영상 슬라이드 ─────────────────────────
+   * 영상 1개당 SLIDE_SEC 초 재생 → 다음 영상으로 슬라이드, 마지막 다음은 첫 영상 (무한 반복)
+   * - 화면 밖으로 스크롤하거나 탭을 숨기면 일시정지 (데이터·배터리 절약)
+   * - '동작 줄이기' 설정 사용자는 자동 재생하지 않음, 데이터 절약 모드는 포스터 이미지만 순환
+   * - 자동 재생이 막힌 환경(iOS 저전력 모드 등)도 포스터 기준 10초 타이머로 슬라이드
+   */
+  var SLIDE_SEC = 10;
+  function initReel() {
+    var reel = $('#reel');
+    if (!reel) return;
+    var slides = $$('.reel__slide', reel);
+    var bars = $$('.reel__bar', reel);
+    var videos = slides.map(function (sl) { return sl.querySelector('video'); });
+    var toggle = $('#reelToggle');
+    var bg = $('#heroBg');
+    var n = slides.length, idx = 0, elapsed = 0, last = 0;
+    var userPaused = false, onScreen = true, fallback = false;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var saveData = navigator.connection && navigator.connection.saveData;
+
+    if (saveData) {
+      fallback = true;
+      videos.forEach(function (v) { v.removeAttribute('src'); v.preload = 'none'; v.load(); });
+    }
+    videos.forEach(function (v, i) {
+      v.muted = true; // iOS 자동재생 조건
+      v.addEventListener('ended', function () { if (i === idx) go(idx + 1); });
+    });
+
+    function running() { return !userPaused && onScreen && !document.hidden; }
+
+    function paint() {
+      bars.forEach(function (b, i) {
+        var p = i < idx ? 1 : i > idx ? 0 : Math.min(elapsed / SLIDE_SEC, 1);
+        b.firstElementChild.style.setProperty('--p', p);
+        b.setAttribute('aria-current', i === idx ? 'true' : 'false');
+      });
+    }
+
+    function playActive() {
+      if (fallback || !running()) return;
+      var pr = videos[idx].play();
+      if (pr && pr.catch) pr.catch(function () { fallback = true; }); // 자동재생 차단 → 타이머 모드
+    }
+
+    function go(to) {
+      var prev = idx;
+      idx = (to + n) % n;
+      slides.forEach(function (sl, i) {
+        sl.classList.toggle('is-active', i === idx);
+        sl.classList.toggle('is-leaving', i === prev && prev !== idx);
+      });
+      videos.forEach(function (v, i) {
+        if (i === idx) return;
+        v.pause();
+        if (i !== prev) { try { v.currentTime = 0; } catch (e) { /* 메타데이터 전 */ } }
+      });
+      var next = videos[(idx + 1) % n]; // 다음 영상 미리 받아두기
+      if (!fallback && next.preload !== 'auto') next.preload = 'auto';
+      try { videos[idx].currentTime = 0; } catch (e) { /* 메타데이터 전 */ }
+      elapsed = 0;
+      bg.style.backgroundImage = 'url("' + slides[idx].getAttribute('data-poster') + '")';
+      paint();
+      playActive();
+    }
+
+    function frame(now) {
+      var dt = last ? (now - last) / 1000 : 0;
+      last = now;
+      if (running()) {
+        var v = videos[idx];
+        if (!fallback && !v.paused && v.readyState >= 2) elapsed = v.currentTime;
+        else if (fallback) elapsed += dt; // 영상 로딩 중이면 진행바를 멈추고 기다림
+        if (elapsed >= SLIDE_SEC - 0.05) go(idx + 1);
+        else paint();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function setPaused(p) {
+      userPaused = p;
+      toggle.setAttribute('aria-pressed', String(p));
+      toggle.setAttribute('aria-label', p ? t('reel.play') : t('reel.pause'));
+      if (p) videos[idx].pause(); else playActive();
+    }
+
+    toggle.addEventListener('click', function () { setPaused(!userPaused); });
+    bars.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        if (i !== idx) { go(i); return; }
+        elapsed = 0;
+        try { videos[idx].currentTime = 0; } catch (e) { /* noop */ }
+      });
+    });
+    document.addEventListener('visibilitychange', function () { if (running()) playActive(); else videos[idx].pause(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        onScreen = es[0].isIntersecting;
+        if (running()) playActive(); else videos[idx].pause();
+      }, { threshold: 0.25 }).observe(reel);
+    }
+
+    bg.style.backgroundImage = 'url("' + slides[0].getAttribute('data-poster') + '")';
+    setPaused(!!reduce);
+    paint();
+    requestAnimationFrame(frame);
+    window.__mvlsReel = { go: go, state: function () { return { idx: idx, elapsed: elapsed, fallback: fallback, paused: userPaused }; } };
+  }
+
+
   renderStatic();
   renderAll();
+  initReel();
 
   // 테스트·디버깅용 (운영 동작에는 영향 없음)
   window.__mvls = { startDates: startDates, sessionDates: sessionDates, byId: byId, today: TODAY };
