@@ -10,7 +10,7 @@ window.MVLS_CONFIG = {
    * 비워두면 "데모 모드"로 동작합니다: 실제 접수 없이 이 브라우저에만 저장됩니다.
    * 예: 'https://script.google.com/macros/s/AKfycb..../exec'
    */
-  API_URL: '',
+  API_URL: 'https://script.google.com/macros/s/AKfycbwzekCtfuQlyZrw9lLZsWsBlxdmrC4elpsgYOBTATMgpWQNI-fVNYkPtmkf06nlx1dwIQ/exec',
 
   /** 관리자(직원)용 구글 시트 주소 - 푸터 '관리자' 링크. 시트 공유 권한으로 접근을 통제합니다. */
   ADMIN_SHEET_URL: '',
