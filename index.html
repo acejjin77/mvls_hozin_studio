@@ -267,7 +267,8 @@
             </div>
             <div class="field">
               <label for="fGPhone" data-i18n="f.gphone">보호자 연락처</label>
-              <input id="fGPhone" name="guardianPhone" type="tel" inputmode="tel" maxlength="20" placeholder="010-0000-0000" />
+              <!-- 휴대폰 번호 · 이메일 · 인스타그램 아이디 중 하나 (외국인 보호자는 로밍이 안 되는 경우가 많음) -->
+              <input id="fGPhone" name="guardianPhone" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="100" data-i18n-ph="f.gphonePh" placeholder="휴대폰 번호, 이메일 또는 인스타그램 아이디" />
               <p class="field__err" data-err="guardianPhone"></p>
             </div>
           </div>

@@ -64,7 +64,7 @@ window.MVLS_TERMS = {
       html: `
         <table>
           <tbody>
-            <tr><th>수집 항목</th><td>(필수) 이름, 연락처(영문 신청은 인스타그램 아이디), 신청 수업 · 수강권 · 수강일<br />(만 14세 미만) 보호자 이름, 보호자 연락처<br />(선택) 연령대, 현금영수증 발급 번호, 신청 경로, 관심 분야, 문의 사항</td></tr>
+            <tr><th>수집 항목</th><td>(필수) 이름, 연락처(영문 신청은 인스타그램 아이디), 신청 수업 · 수강권 · 수강일<br />(만 14세 미만) 보호자 이름, 보호자 연락처(휴대폰 번호 · 이메일 · 인스타그램 아이디 중 하나)<br />(선택) 연령대, 현금영수증 발급 번호, 신청 경로, 관심 분야, 문의 사항</td></tr>
             <tr><th>수집 목적</th><td>수강 신청 접수, 수납 확인, 수강 안내 및 일정 변경 연락, 현금영수증 발급, 신청내역 조회</td></tr>
             <tr><th>보유 기간</th><td>수강 종료 후 1년. 단, 관계 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다. <span class="muted">[확인 필요]</span></td></tr>
             <tr><th>처리 위탁 · 국외 이전</th><td>신청 정보는 Google LLC의 클라우드 서비스(Google Sheets)에 저장되며, 데이터는 국외(미국 등) 서버에 보관될 수 있습니다. 이전 시점: 신청서 제출 시 / 이전 방법: 네트워크 전송</td></tr>
@@ -80,7 +80,7 @@ window.MVLS_TERMS = {
       html: `
         <table>
           <tbody>
-            <tr><th>What we collect</th><td>(Required) Name, Instagram ID, selected class · pass · date<br />(Under 14) Guardian's name and phone number<br />(Optional) Age group, how you found us, interests, questions</td></tr>
+            <tr><th>What we collect</th><td>(Required) Name, Instagram ID, selected class · pass · date<br />(Under 14) Guardian's name and contact (phone, email or Instagram ID)<br />(Optional) Age group, how you found us, interests, questions</td></tr>
             <tr><th>Purpose</th><td>Processing your registration, confirming payment, class notices and schedule changes, looking up your bookings</td></tr>
             <tr><th>Retention</th><td>1 year after your classes end, or longer where the law requires.</td></tr>
             <tr><th>Storage</th><td>Your information is stored in Google Sheets (Google LLC), and may be kept on servers outside Korea (e.g. the US).</td></tr>

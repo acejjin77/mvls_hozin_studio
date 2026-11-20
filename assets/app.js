@@ -33,7 +33,7 @@
       'f.name': '이름', 'f.phone': '연락처', 'f.age': '연령대 <small>(선택)</small>', 'f.ageNone': '선택 안 함',
       'f.kind': '신청 구분', 'f.kindPre': '사전 신청', 'f.kindOnsite': '현장 신청 (스튜디오에서 신청)',
       'f.minor': '신청자가 만 14세 미만입니다 (보호자 정보 입력)',
-      'f.gname': '보호자 이름', 'f.gphone': '보호자 연락처',
+      'f.gname': '보호자 이름', 'f.gphone': '보호자 연락처', 'f.gphonePh': '휴대폰 번호, 이메일 또는 인스타그램 아이디',
       'f.more': '추가 정보 (선택)', 'f.receipt': '현금영수증 발급 번호', 'f.receiptPh': '휴대폰 번호 또는 사업자번호 (희망 시)',
       'f.source': '신청 경로', 'f.interest': '관심 분야', 'f.memo': '문의 사항',
       'f.agreeAll': '아래 내용에 모두 동의합니다',
@@ -54,7 +54,7 @@
       'cls.until': '~{d}', 'cls.from': '{d} 시작', 'cls.only': '{list} 진행',
       'err.ticket': '수강권을 선택해주세요.', 'err.date': '수강일을 선택해주세요.',
       'err.name': '이름을 입력해주세요.', 'err.phone': '연락 가능한 휴대폰 번호를 입력해주세요. (예: 010-1234-5678)',
-      'err.gname': '보호자 이름을 입력해주세요.', 'err.gphone': '보호자 연락처를 입력해주세요.',
+      'err.gname': '보호자 이름을 입력해주세요.', 'err.gphone': '보호자 휴대폰 번호, 이메일, 인스타그램 아이디(@아이디) 중 하나를 입력해주세요.',
       'err.agree': '필수 항목에 동의해주세요.',
       'err.network': '접수 서버에 연결하지 못했어요. 잠시 후 다시 시도하거나 카카오 채널로 문의해주세요. (입력한 내용은 그대로 남아 있어요)',
       'err.DUPLICATE': '같은 연락처로 같은 수업 · 같은 날짜에 이미 신청한 내역이 있어요. 변경이 필요하면 카카오 채널로 문의해주세요.',
@@ -91,7 +91,7 @@
       'f.name': 'Name', 'f.phone': 'Phone', 'f.age': 'Age group <small>(optional)</small>', 'f.ageNone': 'Prefer not to say',
       'f.kind': 'Booking type', 'f.kindPre': 'Online (in advance)', 'f.kindOnsite': 'At the studio',
       'f.minor': 'The student is under 14 (guardian details required)',
-      'f.gname': 'Guardian name', 'f.gphone': 'Guardian phone',
+      'f.gname': 'Guardian name', 'f.gphone': 'Guardian contact', 'f.gphonePh': 'Phone, email or Instagram ID',
       'f.more': 'More details (optional)', 'f.receipt': 'Cash receipt number', 'f.receiptPh': 'Phone or business number (if needed)',
       'f.source': 'How did you find us?', 'f.interest': 'Interests', 'f.memo': 'Questions',
       'f.agreeAll': 'I agree to all of the below',
@@ -112,7 +112,7 @@
       'cls.until': 'until {d}', 'cls.from': 'starts {d}', 'cls.only': '{list} only',
       'err.ticket': 'Please choose a pass.', 'err.date': 'Please choose a date.',
       'err.name': 'Please enter your name.', 'err.phone': 'Please enter a valid phone number.',
-      'err.gname': 'Please enter the guardian’s name.', 'err.gphone': 'Please enter the guardian’s phone.',
+      'err.gname': 'Please enter the guardian’s name.', 'err.gphone': 'Please enter the guardian’s phone number, email or Instagram ID (@id).',
       'err.agree': 'Please agree to the required items.',
       'err.network': 'We could not reach the server. Please try again, or contact us on Kakao. (Your entries are kept.)',
       'err.DUPLICATE': 'This phone number has already booked this class on this date. Contact us on Kakao to change it.',
@@ -143,6 +143,19 @@
     var s = String(v || '').trim().toLowerCase()
       .replace(/^(https?:\/\/)?(www\.)?instagram\.com\//, '').replace(/[/?#].*$/, '').replace(/^@/, '');
     return /^[a-z0-9._]{1,30}$/.test(s) ? s : '';
+  }
+
+  /**
+   * 보호자 연락처: 휴대폰 번호 / 이메일 / 인스타그램 아이디 중 하나 → 시트 '보호자연락처' 한 칸에 저장
+   *  010-1234-5678, +1 415 555 0100 → 전화 / parent@mail.com → 이메일 / @id, instagram.com/id, id → 인스타그램(@id)
+   */
+  function normContact(v) {
+    var s = String(v || '').trim();
+    if (!s) return '';
+    if (s.length <= 100 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)) return s.toLowerCase();
+    if (/^[+\d][\d\s-]*$/.test(s)) return validPhone(s) ? formatPhone(s) : '';
+    var ig = normIg(s);
+    return ig ? '@' + ig : '';
   }
   var INTERESTS = [
     ['팝핑', 'Popping'], ['힙합', 'Hiphop'], ['락킹', 'Locking'], ['왁킹', 'Waacking'],
@@ -558,7 +571,7 @@
       channel: fd.get('channel') || '사전 신청',
       isMinor: minor,
       guardianName: minor ? (fd.get('guardianName') || '').trim() : '',
-      guardianPhone: minor ? formatPhone((fd.get('guardianPhone') || '').trim()) : '',
+      guardianPhone: minor ? normContact(fd.get('guardianPhone')) : '',
       cashReceipt: isForeign() ? '' : (fd.get('cashReceipt') || '').trim(),
       source: fd.get('source') || '',
       interests: fd.getAll('interests'),
@@ -586,7 +599,7 @@
     if ($('#fMinor').checked) {
       var gn = $('#fGName'), gp = $('#fGPhone');
       if (!gn.value.trim()) fail('guardianName', t('err.gname'), gn);
-      if (!validPhone(gp.value)) fail('guardianPhone', t('err.gphone'), gp);
+      if (!normContact(gp.value)) fail('guardianPhone', t('err.gphone'), gp);
     }
     var agrees = $$('[data-agree]', form).every(function (x) { return x.checked; });
     if ($('#fMinor').checked && !form.agreeGuardian.checked) agrees = false;

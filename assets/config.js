@@ -106,5 +106,5 @@ window.MVLS_CONFIG = {
   ],
 
   /** 동의 문구 버전 - 문구를 바꾸면 버전도 올려주세요 (신청 데이터에 함께 저장) */
-  termsVersion: '2026-11-v2',
+  termsVersion: '2026-11-v3',
 };

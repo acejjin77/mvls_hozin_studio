@@ -13,7 +13,7 @@
  *  NOTIFY_EMAIL  새 신청 알림을 받을 메일 (쉼표로 여러 개). 비우면 메일 안 보냄.
  */
 
-var CODE_VERSION = '2026-11-20-insta-lookup'; // 배포 URL 을 브라우저로 열면 보이는 값. 코드 수정 시 함께 변경
+var CODE_VERSION = '2026-11-20-guardian-contact'; // 배포 URL 을 브라우저로 열면 보이는 값. 코드 수정 시 함께 변경
 var SHEET_APPS = '신청내역';
 var SHEET_SUMMARY = '수업별현황';
 var TZ = 'Asia/Seoul';
@@ -49,7 +49,7 @@ var COLS = [
   ['ageGroup', '연령대', 70],
   ['isMinor', '14세미만', 70],
   ['guardianName', '보호자명', 90],
-  ['guardianPhone', '보호자연락처', 120],
+  ['guardianPhone', '보호자연락처', 170], // 휴대폰 · 이메일 · 인스타그램(@id) 중 하나
   ['cashReceipt', '현금영수증', 120],
   ['channel', '신청구분', 80],
   ['source', '신청경로', 110],
@@ -225,7 +225,7 @@ function validate_(p) {
   var guardianName = '', guardianPhone = '';
   if (isMinor) {
     guardianName = str_(p.guardianName, 30);
-    guardianPhone = normPhone_(p.guardianPhone);
+    guardianPhone = normContact_(p.guardianPhone);
     if (!guardianName || !guardianPhone || consents.guardian !== true) return bad('guardian');
   }
 
@@ -396,6 +396,19 @@ function normPhone_(v) {
 function normIg_(v) {
   var s = str_(v, 100).toLowerCase().replace(/^(https?:\/\/)?(www\.)?instagram\.com\//, '').replace(/[/?#].*$/, '').replace(/^@/, '');
   return /^[a-z0-9._]{1,30}$/.test(s) ? s : '';
+}
+
+/**
+ * 보호자 연락처: 휴대폰 번호 / 이메일 / 인스타그램 아이디 중 하나 (한 칸에 저장)
+ * 외국인 보호자는 로밍이 안 되는 경우가 많아 이메일·인스타그램도 허용
+ */
+function normContact_(v) {
+  var s = str_(v, 100);
+  if (!s) return '';
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)) return s.toLowerCase();
+  if (/^[+\d][\d\s-]*$/.test(s)) return normPhone_(s);
+  var ig = normIg_(s);
+  return ig ? '@' + ig : '';
 }
 
 /** 이름 비교용: 공백 제거 + 소문자 */
