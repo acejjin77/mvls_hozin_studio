@@ -20,7 +20,9 @@
 | `assets/terms.js` | 수강 안내·환불 규정, 개인정보 동의 문구 | 대표 확인 |
 | `apps-script/Code.gs` | 접수 서버 (검증·중복 방지·시트 저장·메일 알림) | 개발자 |
 | `assets/media/` | 메인 화면 수업 영상 3개(`class-1~3.mp4`)와 포스터 이미지(`.jpg`) | 운영 |
-| `assets/img/` | 로고(`logo-white.png`), 파비콘, 링크 미리보기 이미지(`og-image.jpg`) | 개발자 |
+| `assets/img/` | 로고(`logo-black.png` 사용 중 · 어두운 배경용 `logo-white.png`), 파비콘, 링크 미리보기 이미지(`og-image.jpg`) | 개발자 |
+
+디자인은 **흰 배경 + 검정 글씨**입니다. 색은 `style.css` 맨 위 `:root` 변수에서 바꿉니다. 노랑(`--accent`)은 버튼·선택 배경에만 쓰고, 흰 배경 위 강조 글씨는 진한 금색(`--accent-text`)을 씁니다. (노랑 글씨는 흰 배경에서 거의 안 읽힘)
 
 `config.js` 의 `API_URL` 이 비어 있으면 **데모 모드**입니다. 실제 접수 없이 브라우저에만 저장되고, 푸터의 "데모 접수내역"으로 확인할 수 있습니다.
 
