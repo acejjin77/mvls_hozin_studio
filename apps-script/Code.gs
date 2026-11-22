@@ -1,7 +1,7 @@
 /**
  * MVLS HOZIN STUDIO - 비회원 수강신청 접수 (Google Apps Script)
  * ------------------------------------------------------------
- * 홈페이지(index.html) → 이 웹앱(doPost) → 구글 시트 '신청내역' 탭에 한 줄씩 저장
+ * 홈페이지(index.html) → 이 웹앱(doPost) → 구글 시트 'MVLS-신청내역' 탭에 한 줄씩 저장
  * 직원은 구글 시트에서 신청을 확인하고 '상태' 칸을 바꿔 관리합니다.
  *
  * 설치 순서는 README.md 참고:
@@ -11,10 +11,15 @@
  *
  * 스크립트 속성 (프로젝트 설정 → 스크립트 속성)
  *  NOTIFY_EMAIL  새 신청 알림을 받을 메일 (쉼표로 여러 개). 비우면 메일 안 보냄.
+ *
+ * LAB(마블러스호진스튜디오 랩) 함께 접수
+ *  같은 프로젝트에 Lab.gs 를 추가하면, site=lab 요청은 Lab.gs(LAB)가 처리합니다.
+ *  웹앱 URL · 스프레드시트 파일은 하나, 탭은 'LAB …' 으로 따로 쌓입니다. Lab.gs 가 없으면 학원만 동작합니다.
  */
 
-var CODE_VERSION = '2026-11-20-guardian-contact'; // 배포 URL 을 브라우저로 열면 보이는 값. 코드 수정 시 함께 변경
-var SHEET_APPS = '신청내역';
+var CODE_VERSION = '2026-11-22-mvls-tab'; // 배포 URL 을 브라우저로 열면 보이는 값. 코드 수정 시 함께 변경
+var SHEET_APPS = 'MVLS-신청내역';
+var SHEET_APPS_OLD = '신청내역'; // 예전 탭 이름 — 남아 있으면 자동으로 'MVLS-신청내역' 으로 이름만 바꿈 (데이터 유지)
 var SHEET_SUMMARY = '수업별현황';
 var TZ = 'Asia/Seoul';
 var STATUS = ['입금대기', '입금확인', '확정', '대기', '취소', '환불'];
@@ -65,9 +70,40 @@ var COLS = [
 /* ───────────────────────── 메뉴 / 초기 설정 ───────────────────────── */
 
 function onOpen() {
-  SpreadsheetApp.getUi().createMenu('MVLS')
-    .addItem('시트 초기 설정 (처음 1회)', 'setup')
-    .addToUi();
+  var menu = SpreadsheetApp.getUi().createMenu('MVLS')
+    .addItem('시트 초기 설정 (처음 1회)', 'setup');
+  if (hasLab_()) menu.addSeparator().addItem('LAB 시트 초기 설정 / 현황 다시 만들기', 'setupLab');
+  menu.addToUi();
+}
+
+/* ───────────────────────── LAB 연결 ───────────────────────── */
+
+/** 같은 프로젝트에 Lab.gs 가 있는지 */
+function hasLab_() { return typeof LAB !== 'undefined' && LAB && typeof LAB.doPost === 'function'; }
+
+/** LAB 홈페이지에서 온 요청인지: 주소 ?site=lab 또는 본문 site:'lab' */
+function isLabRequest_(e) {
+  if (!e) return false;
+  if (e.parameter && e.parameter.site === 'lab') return true;
+  try {
+    var b = e.postData && e.postData.contents;
+    return !!b && b.length <= 20000 && JSON.parse(b).site === 'lab';
+  } catch (err) {
+    return false;
+  }
+}
+
+/**
+ * 학원 신청내역 탭. 예전 이름 '신청내역' 탭만 있으면 'MVLS-신청내역' 으로 이름을 바꿔 씁니다.
+ * (직원이 시트에서 먼저 이름을 바꿔도, 재배포를 먼저 해도 같은 탭에 계속 쌓임)
+ */
+function appsSheet_(ss) {
+  var sh = ss.getSheetByName(SHEET_APPS);
+  if (!sh) {
+    var old = ss.getSheetByName(SHEET_APPS_OLD);
+    if (old) { old.setName(SHEET_APPS); sh = old; }
+  }
+  return sh;
 }
 
 /** 시트·헤더·상태 드롭다운·색상·현황 탭을 만듭니다. 여러 번 실행해도 안전합니다. */
@@ -75,7 +111,7 @@ function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   ss.setSpreadsheetTimeZone(TZ);
 
-  var sh = ss.getSheetByName(SHEET_APPS) || ss.insertSheet(SHEET_APPS, 0);
+  var sh = appsSheet_(ss) || ss.insertSheet(SHEET_APPS, 0);
   var map = headerMap_(sh); // 기존 헤더는 그대로 두고, 없는 헤더만 오른쪽 끝에 추가
   var width = sh.getLastColumn();
   sh.getRange(1, 1, 1, width).setFontWeight('bold').setBackground('#1d3b2a').setFontColor('#ffffff');
@@ -123,12 +159,14 @@ function setup() {
 
 /* ───────────────────────── 웹앱 엔드포인트 ───────────────────────── */
 
-/** 상태 확인용: 배포 URL 을 브라우저로 열면 {"ok":true} 가 보이면 정상 */
-function doGet() {
-  return json_({ ok: true, service: 'mvls-apply', version: CODE_VERSION });
+/** 상태 확인용: 배포 URL 을 브라우저로 열면 {"ok":true} 가 보이면 정상 (?site=lab 은 LAB 상태 · 워크숍 목록) */
+function doGet(e) {
+  if (isLabRequest_(e)) return hasLab_() ? LAB.doGet(e) : json_({ ok: false, code: 'LAB_NOT_INSTALLED' });
+  return json_({ ok: true, service: 'mvls-apply', version: CODE_VERSION, lab: hasLab_() ? LAB.version : null });
 }
 
 function doPost(e) {
+  if (isLabRequest_(e)) return hasLab_() ? LAB.doPost(e) : json_({ ok: false, code: 'LAB_NOT_INSTALLED' }); // LAB 신청 · 조회 → Lab.gs (없으면 학원 탭에 섞이지 않게 거절)
   var out;
   try {
     var body = e && e.postData && e.postData.contents;
@@ -169,8 +207,8 @@ function handleApply_(p) {
   if (!lock.tryLock(15000)) return { ok: false, code: 'SERVER' };
   var result;
   try {
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPS);
-    if (!sh) throw new Error('신청내역 시트가 없습니다. setup 을 먼저 실행하세요.');
+    var sh = appsSheet_(SpreadsheetApp.getActiveSpreadsheet());
+    if (!sh) throw new Error(SHEET_APPS + ' 시트가 없습니다. setup 을 먼저 실행하세요.');
 
     if (isDuplicate_(sh, a, headerMap_(sh))) {
       result = { ok: false, code: 'DUPLICATE' };
@@ -289,7 +327,7 @@ function handleLookup_(p) {
   if (k >= LOOKUP_PER_KEY_10MIN) return { ok: false, code: 'RATE_LIMIT' };
   cache.put(kKey, String(k + 1), 600);
 
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPS);
+  var sh = appsSheet_(SpreadsheetApp.getActiveSpreadsheet());
   if (!sh || sh.getLastRow() < 2) return { ok: true, items: [] };
   var map = headerMap_(sh);
   var values = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();

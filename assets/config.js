@@ -41,7 +41,7 @@ window.MVLS_CONFIG = {
     kakaoUrl: 'http://pf.kakao.com/_mJMPb',
     kakaoHours: '평일 16:00 – 22:00',
     kakaoHoursEn: 'Weekdays 16:00 – 22:00',
-    instagramUrl: '', // [확인 필요] 스튜디오 인스타그램 주소
+    instagramUrl: 'https://www.instagram.com/mvlshozinstudio', // [확인 필요] 스튜디오 인스타그램 주소
     mapUrl: 'https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EB%B0%A9%EB%B0%B0%EB%8F%99%20437-23',
   },
 
@@ -73,13 +73,13 @@ window.MVLS_CONFIG = {
     ACADEMY: {
       name: '마블러스호진댄스학원',
       ceo: '강유진',
-      bizNo: '[확인 필요]',
-      academyRegNo: '[확인 필요]',
+      bizNo: '890-96-01384',
+      academyRegNo: '제13821호',
     },
     LAB: {
       name: '마블러스호진스튜디오 랩',
       ceo: '강호진',
-      bizNo: '[확인 필요]',
+      bizNo: '728-07-02046',
     },
   },
 
